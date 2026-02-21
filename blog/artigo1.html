@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Architecture Design with S3, Glue and Athena | Alan Raphael</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 60px 10%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #14001f, #24003a);
+      color: white;
+      line-height: 1.8;
+    }
+    h1, h2, h3 {
+      background: linear-gradient(90deg, #ff7a18, #6a00f4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    code {
+      background: rgba(255,255,255,0.08);
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+    pre {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+    a { color: #ff7a18; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<h1>Architecture Design Using S3, Glue and Athena with Partitioning Strategies</h1>
+
+<p>
+Modern data platforms demand scalable, cost-efficient and high-performance query engines.
+One of the most powerful and serverless combinations in AWS is:
+<strong>S3 + Glue + Athena</strong>.
+</p>
+
+<h2>High-Level Architecture</h2>
+
+<p>
+A typical architecture follows this structure:
+</p>
+
+<pre>
+Data Source → S3 (Raw Layer)
+            → Glue ETL → S3 (Curated Layer)
+            → Glue Catalog
+            → Athena Queries
+</pre>
+
+<h3>1. Amazon S3 as Data Lake</h3>
+
+<p>
+S3 works as the storage layer of the data lake. 
+Best practice is organizing it into layers:
+</p>
+
+<ul>
+<li><strong>Raw</strong> – immutable ingested data</li>
+<li><strong>Trusted</strong> – validated and cleaned data</li>
+<li><strong>Refined</strong> – analytics-ready datasets</li>
+</ul>
+
+<h2>Partitioning Strategy</h2>
+
+<p>
+Partitioning is critical for performance and cost optimization in Athena.
+Without partitions, Athena scans the entire dataset.
+With partitions, it scans only relevant files.
+</p>
+
+<h3>Bad Example (No Partitioning)</h3>
+
+<pre>
+s3://datalake/sales/data.parquet
+</pre>
+
+This forces Athena to scan everything.
+
+<h3>Good Example (Partitioned by Date)</h3>
+
+<pre>
+s3://datalake/sales/year=2026/month=02/day=20/
+</pre>
+
+Now queries like:
+
+<pre>
+SELECT * FROM sales
+WHERE year = 2026 AND month = 02;
+</pre>
+
+will scan only that partition.
+
+<h2>Best Partitioning Practices</h2>
+
+<ul>
+<li>Partition by low-to-medium cardinality columns</li>
+<li>Avoid partitioning by user_id or high-cardinality columns</li>
+<li>Prefer date-based partitioning for time-series data</li>
+<li>Use Parquet or ORC instead of CSV</li>
+</ul>
+
+<h2>Glue Data Catalog</h2>
+
+<p>
+Glue Crawlers automatically detect schema and partitions.
+However, for production environments:
+</p>
+
+<ul>
+<li>Define schemas manually</li>
+<li>Control partition creation via ETL jobs</li>
+<li>Enable partition projection when datasets are large</li>
+</ul>
+
+<h2>Cost Optimization</h2>
+
+Athena charges per TB scanned.
+
+To reduce costs:
+<ul>
+<li>Use columnar formats (Parquet)</li>
+<li>Compress files (Snappy)</li>
+<li>Use partition pruning</li>
+<li>Avoid SELECT *</li>
+</ul>
+
+<h2>Final Thoughts</h2>
+
+<p>
+A well-designed S3 + Glue + Athena architecture can scale to petabytes
+with minimal operational overhead.
+Partitioning is not optional — it is fundamental.
+</p>
+
+<p>
+Serverless does not mean architecture-free.
+Design still matters.
+</p>
+
+<br><br>
+<a href="../blog.html">← Back to Blog</a>
+
+</body>
+</html>
