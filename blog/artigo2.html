@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PySpark Performance Optimization Guide | Alan Raphael</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 60px 10%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #14001f, #24003a);
+      color: white;
+      line-height: 1.8;
+    }
+    h1, h2, h3 {
+      background: linear-gradient(90deg, #ff7a18, #6a00f4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    pre {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+    code {
+      background: rgba(255,255,255,0.08);
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+    a { color: #ff7a18; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<h1>PySpark Performance Optimization Guide</h1>
+
+<p>
+PySpark is powerful — but inefficient jobs can become extremely expensive.
+Optimization is about minimizing shuffle, reducing data movement and improving execution plans.
+</p>
+
+<h2>Understand the Spark Execution Model</h2>
+
+Spark works with:
+<ul>
+<li>Driver</li>
+<li>Executors</li>
+<li>Transformations (lazy)</li>
+<li>Actions (trigger execution)</li>
+</ul>
+
+Use:
+<pre>
+df.explain(True)
+</pre>
+to inspect the execution plan.
+
+<h2>1. Reduce Shuffle Operations</h2>
+
+Shuffle is the biggest performance killer.
+
+Avoid:
+<pre>
+df.groupBy("user_id").count()
+</pre>
+
+If high cardinality.
+
+Instead:
+<ul>
+<li>Repartition wisely</li>
+<li>Use bucketing when appropriate</li>
+</ul>
+
+<h2>2. Optimize Joins</h2>
+
+Use Broadcast Join for small datasets:
+
+<pre>
+from pyspark.sql.functions import broadcast
+
+df_large.join(broadcast(df_small), "id")
+</pre>
+
+This avoids shuffle on both sides.
+
+<h2>3. Use Proper Partitioning</h2>
+
+Too few partitions → underutilization  
+Too many partitions → overhead
+
+Set:
+<pre>
+spark.conf.set("spark.sql.shuffle.partitions", 200)
+</pre>
+
+Tune based on cluster size.
+
+<h2>4. Avoid UDFs When Possible</h2>
+
+Prefer built-in functions:
+
+Bad:
+<pre>
+df.withColumn("x", my_udf("col"))
+</pre>
+
+Good:
+<pre>
+from pyspark.sql.functions import col
+df.withColumn("x", col("col") * 2)
+</pre>
+
+Built-in functions are optimized in Catalyst.
+
+<h2>5. Cache Strategically</h2>
+
+Only cache when reused multiple times:
+
+<pre>
+df.cache()
+df.count()
+</pre>
+
+Do not cache blindly.
+
+<h2>6. File Format Matters</h2>
+
+Always prefer:
+<ul>
+<li>Parquet</li>
+<li>Delta</li>
+</ul>
+
+Avoid CSV for large datasets.
+
+<h2>Final Thoughts</h2>
+
+Performance tuning in Spark is not about magic flags.
+It is about understanding:
+<ul>
+<li>Data size</li>
+<li>Partitioning strategy</li>
+<li>Execution plan</li>
+<li>Cluster resources</li>
+</ul>
+
+Measure. Optimize. Measure again.
+
+<br><br>
+<a href="../blog.html">← Back to Blog</a>
+
+</body>
+</html>
