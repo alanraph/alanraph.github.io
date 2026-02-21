@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alan Raphael | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #14001f, #24003a);
+      color: white;
+    }
+
+    header {
+      padding: 20px 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      background: linear-gradient(90deg, #ff7a18, #6a00f4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav a {
+      margin-left: 25px;
+      text-decoration: none;
+      color: white;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #ff7a18;
+    }
+
+    .container {
+      padding: 60px 10%;
+    }
+
+    .article {
+      background: rgba(255,255,255,0.05);
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: 15px;
+      transition: 0.3s;
+    }
+
+    .article:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .article h3 {
+      margin-bottom: 10px;
+    }
+
+    .article p {
+      color: #ccc;
+    }
+
+    .article a {
+      color: #ff7a18;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Blog</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="projetos.html">Projects</a>
+    <a href="https://medium.com/@SEUUSUARIO" target="_blank">Medium</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="article">
+    <h3>Building a Scalable Data Lake on AWS</h3>
+    <p>Architecture design using S3, Glue and Athena with partitioning strategies.</p>
+    <a href="blog/artigo1.html">Read More →</a>
+  </div>
+
+  <div class="article">
+    <h3>PySpark Performance Optimization Guide</h3>
+    <p>Techniques to reduce shuffle, optimize joins and improve distributed execution.</p>
+    <a href="blog/artigo2.html">Read More →</a>
+  </div>
+
+  <div class="article">
+    <h3>Designing Reliable ETL Pipelines</h3>
+    <p>Logging, monitoring and automation strategies in cloud-native environments.</p>
+    <a href="blog/artigo3.html">Read More →</a>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Alan Raphael
+</footer>
+
+</body>
+</html>
